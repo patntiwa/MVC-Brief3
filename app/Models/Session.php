@@ -1,7 +1,8 @@
 <?php
 // /app/Models/Session.php
+require_once '../Config/database.php';
 
-class Session extends Model
+class Session 
 {
     protected $table = 'sessions';
     
@@ -11,7 +12,7 @@ class Session extends Model
     public function updateLogoutTime($id)
     {
         $query = "UPDATE {$this->table} SET logout_time = CURRENT_TIMESTAMP WHERE id = :id";
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->conn->prepare($query);
         return $stmt->execute(['id' => $id]);
     }
     
@@ -21,7 +22,7 @@ class Session extends Model
     public function getUserSessions($userId)
     {
         $query = "SELECT * FROM {$this->table} WHERE user_id = :user_id ORDER BY login_time DESC";
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->conn->prepare($query);
         $stmt->execute(['user_id' => $userId]);
         return $stmt->fetchAll();
     }
@@ -34,7 +35,7 @@ class Session extends Model
         $query = "SELECT s.*, u.username FROM {$this->table} s
                   JOIN users u ON s.user_id = u.id
                   ORDER BY s.login_time DESC";
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll();
     }

@@ -1,25 +1,29 @@
 <?php
-// Charger les contrôleurs
-require_once 'controllers/AuthController.php';
+session_start();
+require_once __DIR__.'app/Config/Config.php';
+require_once __DIR__.'app/Controllers/AuthController.php';
+require_once __DIR__.'app/Controllers/UserController.php';
 
-// Récupérer les paramètres de l'URL
-$controllerName = isset($_GET['controller']) ? $_GET['controller'] : 'home';
-$actionName = isset($_GET['action']) ? $_GET['action'] : 'index';
+// Définir les routes par défaut
+$controller = isset($_GET['controller']) ? $_GET['controller'] : 'auth';
+$action = isset($_GET['action']) ? $_GET['action'] : 'login';
 
-// Appeler le bon contrôleur
-switch ($controllerName) {
+// Créer une instance du contrôleur approprié
+switch ($controller) {
     case 'auth':
-        $controller = new AuthController();
+        $controllerInstance = new AuthController();
         break;
-    // Vous pouvez ajouter d'autres contrôleurs ici
+    case 'user':
+        $controllerInstance = new UserController();
+        break;
     default:
-        die("Contrôleur non trouvé !");
+        die('Contrôleur non trouvé');
 }
 
-// Appeler la méthode correspondante
-if (method_exists($controller, $actionName)) {
-    $controller->$actionName($_POST ?? []); // Passe les données POST si disponibles
+// Vérifier si la méthode existe
+if (method_exists($controllerInstance, $action)) {
+    $controllerInstance->$action($_POST);
 } else {
-    die("Action non trouvée !");
+    die('Action non trouvée');
 }
 ?>

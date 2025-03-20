@@ -32,3 +32,4 @@ include '../layouts/header.php';
                 </tbody>
             </table>
     </div>
+<?php include '../layouts/footer.php'; ?>

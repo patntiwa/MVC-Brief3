@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /MVC-Brief3/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Activer la gestion des erreurs PHP
+php_flag display_errors on
+php_value error_reporting E_ALL

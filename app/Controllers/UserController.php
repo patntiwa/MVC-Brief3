@@ -34,6 +34,28 @@ class UserController {
         }
     }
 
+    // Modifier un utilisateur (formulaire de modification)
+    public function edit($id) {
+        $user = $this->userModel->getById($id);
+        require_once 'views/users/Edit.php'; // Affichage du formulaire de modification
+    }
+
+    // Soumettre le formulaire pour mettre à jour un utilisateur
+    public function update($data) {
+        $id = $data['id'];
+        $username = $data['username'];
+        $email = $data['email'];
+        $role_id = $data['role_id'];
+        $status = $data['status'];
+
+        $result = $this->userModel->updateUser($id, $username, $email, $role_id, $status);
+        if ($result) {
+            header('Location: index.php?controller=user&action=index'); // Rediriger vers la liste
+        } else {
+            echo "Erreur lors de la mise à jour de l'utilisateur.";
+        }
+    }
+
     // Supprimer un utilisateur
     public function delete($id) {
         $result = $this->userModel->deleteUser($id);
@@ -65,7 +87,30 @@ class UserController {
         session_destroy();
         header('Location: index.php?controller=auth&action=login'); // Redirige vers la connexion
     }
-    
-    
+
+    public function dashboard() {
+        // Vérifier si l'utilisateur est connecté
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?controller=auth&action=login');
+            exit();
+        }
+
+        $totalUsers = $this->userModel->countUsers();
+        $recentActivity = $this->userModel->getRecentActivity();
+        
+        require_once 'views/users/dashboard.php';
+    }
+
+    public function profile() {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?controller=auth&action=login');
+            exit();
+        }
+
+        $user = $this->userModel->getById($_SESSION['user_id']);
+        $loginHistory = $this->userModel->getUserLoginHistory($_SESSION['user_id']);
+        
+        require_once 'views/users/profile.php';
+    }
 }
 ?>
