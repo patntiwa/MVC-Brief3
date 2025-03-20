@@ -5,6 +5,12 @@ require_once '../Config/database.php';
 class Session 
 {
     protected $table = 'sessions';
+    protected $conn;
+
+    public function __construct($conn)
+    {
+        $this->conn = $conn;
+    }
     
     /**
      * Mettre à jour l'heure de déconnexion

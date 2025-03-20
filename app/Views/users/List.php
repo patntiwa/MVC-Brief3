@@ -1,6 +1,6 @@
 <?php
 $pageTitle = "Liste des utilisateurs";
-include '../layouts/header.php';
+include __DIR__ . '/../layouts/Header.php';
 ?>
     <div class="container mx-auto py-8">
             <h1 class="text-2xl font-bold text-center mb-6">Liste des utilisateurs</h1>
@@ -32,4 +32,4 @@ include '../layouts/header.php';
                 </tbody>
             </table>
     </div>
-<?php include '../layouts/footer.php'; ?>
+<?php include __DIR__ . '/../layouts/Footer.php'; ?>

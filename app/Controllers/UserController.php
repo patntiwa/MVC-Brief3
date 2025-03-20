@@ -16,6 +16,8 @@ class UserController {
 
     // Ajouter un utilisateur (formulaire de création)
     public function create() {
+        $roles = $this->userModel->getRoles(); // Récupérer les rôles pour le formulaire
+        // Vérifier si l'utilisateur est connecté et a le droit d'ajouter un utilisateur
         require_once 'views/users/Create.php'; // Affichage du formulaire
     }
 
@@ -37,6 +39,7 @@ class UserController {
     // Modifier un utilisateur (formulaire de modification)
     public function edit($id) {
         $user = $this->userModel->getById($id);
+        $roles = $this->userModel->getRoles(); // Récupérer les rôles pour le formulaire
         require_once 'views/users/Edit.php'; // Affichage du formulaire de modification
     }
 
