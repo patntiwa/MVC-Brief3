@@ -1,27 +1,13 @@
 <?php
-// /config/config.php
-
 // Configuration de base
-define('BASE_URL', 'http://localhost/gestion-utilisateurs');
-define('SITE_NAME', 'Gestion Utilisateurs');
+define('BASE_URL', 'http://localhost/GESTION-CLIENTS');
+define('ROOT_PATH', dirname(dirname(__DIR__)));
 
-// Sessions
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.cookie_secure', 0); // Mettre à 1 en production avec HTTPS
+// Configuration de base de données
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root'); // Modifiez selon vos paramètres
+define('DB_PASS', ''); // Modifiez selon vos paramètres
+define('DB_NAME', 'gestion_clients'); // Nom de votre base de données
 
-// Options de debug
-define('DEBUG', true);
-
-// Fonction d'affichage des erreurs
-function debug_log($message, $data = null)
-{
-    if (DEBUG) {
-        echo '<pre>';
-        echo '<strong>' . $message . '</strong><br>';
-        if ($data) {
-            print_r($data);
-        }
-        echo '</pre>';
-    }
-}
+// Configuration de sécurité
+define('HASH_COST', 10); // Pour bcrypt

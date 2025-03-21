@@ -1,40 +1,66 @@
-<?php
-$pageTitle = "Inscription";
-$currentPage = "register";
-//filepath: c:\wamp64\www\MVC-Brief3\app\Views\auth\register.php
-// Include the header for the registration page
-include_once __DIR__ . '/../layouts/AuthHeader.php';
-// Include the header for the registration page
-?>
+<?php require_once ROOT_PATH . '/app/views/layouts/header.php'; ?>
 
-<div class="max-w-md mx-auto mt-10">
-    <h2 class="text-xl font-bold mb-4">Inscription</h2>
-    <form action="/register" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Nom d'utilisateur</label>
-            <input type="text" name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+<div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-md mt-10">
+    <div class="md:flex">
+        <div class="w-full p-6">
+            <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Inscription</h1>
+            
+            <form action="<?= BASE_URL ?>/register" method="POST" class="space-y-4">
+                <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+                
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
+                        Nom d'utilisateur
+                    </label>
+                    <input type="text" id="username" name="username" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                        Adresse e-mail
+                    </label>
+                    <input type="email" id="email" name="email" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                        Mot de passe
+                    </label>
+                    <input type="password" id="password" name="password" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    <p class="mt-1 text-xs text-gray-500">
+                        Le mot de passe doit contenir au moins 8 caractères
+                    </p>
+                </div>
+                
+                <div>
+                    <label for="password_confirm" class="block text-sm font-medium text-gray-700 mb-1">
+                        Confirmer le mot de passe
+                    </label>
+                    <input type="password" id="password_confirm" name="password_confirm" required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <button type="submit" 
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        S'inscrire
+                    </button>
+                </div>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Vous avez déjà un compte ? 
+                    <a href="<?= BASE_URL ?>/login" class="font-medium text-blue-600 hover:text-blue-500">
+                        Connectez-vous
+                    </a>
+                </p>
+            </div>
         </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-            <input type="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-gray-700 text-sm font-bold mb-2">Mot de passe</label>
-            <input type="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-        </div>
-        <div class="mb-4">
-                <label for="role_id" class="block text-gray-700 font-bold mb-2">Rôle</label>
-                <select id="role_id" name="role_id" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="" disabled selected>Sélectionnez un rôle</option>
-                    <?php foreach ($roles as $role): ?>
-                        <option value="<?= htmlspecialchars($role['id']); ?>"><?= htmlspecialchars($role['name']); ?></option>
-                    <?php endforeach; ?>
-                </select>
-        </div>
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            S'inscrire
-        </button>
-    </form>
+    </div>
 </div>
 
-<?php include_once __DIR__ . '/../layouts/AuthFooter.php'; ?>
+<?php require_once ROOT_PATH . '/app/views/layouts/footer.php'; ?>
