@@ -1,6 +1,6 @@
 <?php
 // Configuration de base
-define('BASE_URL', 'http://localhost/GESTION-CLIENTS');
+define('BASE_URL', 'http://localhost/MVC-BRIEF3');
 define('ROOT_PATH', dirname(dirname(__DIR__)));
 
 // Configuration de base de données
