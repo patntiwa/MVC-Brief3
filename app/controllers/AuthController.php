@@ -8,28 +8,81 @@ class AuthController {
     public function __construct() {
         $this->userModel = new User();
     }
-
     public function login() {
+        // Ajout d'un rapport d'erreur pour comprendre tout problème
+        error_reporting(E_ALL);
+        ini_set('display_errors', 1);
+    
+        // Vérifier si la méthode de requête est POST
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            echo "Formulaire soumis en POST<br>";
+    
+            // Vérifier si les champs sont définis et non vides
+            if (!isset($_POST['email'], $_POST['password']) || empty($_POST['email']) || empty($_POST['password'])) {
+                echo "L'un des champs est vide.<br>";
+                $error = "Veuillez remplir tous les champs.";
+                require '../app/views/auth/login.php';
+                return;
+            }
+    
             $email = $_POST['email'];
             $password = $_POST['password'];
-
+    
+            echo "Email reçu : {$email}<br>";
+    
+            // Instancier le modèle User et récupérer l'utilisateur
             $userModel = new User();
             $user = $userModel->findByEmail($email);
-
+    
+            if ($user) {
+                echo "Utilisateur trouvé : " . print_r($user, true) . "<br>";
+            } else {
+                echo "Aucun utilisateur trouvé avec cet email.<br>";
+            }
+    
+            // Vérifier si l'utilisateur et le mot de passe sont valides
             if ($user && password_verify($password, $user['password'])) {
+                echo "Utilisateur validé, rôle ID : " . $user['role_id'] . "<br>";
+    
+                // Vérifier si une session a déjà été démarrée avant de la démarrer
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                    echo "Session démarrée.<br>";
+                } else {
+                    echo "Session déjà active.<br>";
+                }
+    
+                // Enregistrer les informations de l'utilisateur dans la session
                 $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
                 $_SESSION['role_id'] = $user['role_id'];
-                header('Location: ?route=dashboard');
+    
+                // Rediriger en fonction du rôle
+                if ($user['role_id'] == 2) { // Rôle client
+                    echo "Redirection vers clientDashboard<br>";
+                    header('Location: ?route=clientDashboard');
+                } else if ($user['role_id'] == 1) { // Rôle admin
+                    echo "Redirection vers adminDashboard<br>";
+                    header('Location: ?route=adminDashboard');
+                } else {
+                    echo "Redirection inconnue<br>";
+                    header('Location: ?route=unknownRole');
+                }
+    
+                // Terminer le script après une redirection
                 exit;
             } else {
-                $error = "Mauvais identifiants.";
+                // Mot de passe incorrect ou utilisateur introuvable
+                echo "Mauvais identifiants ou mot de passe invalide.<br>";
+                $error = "Nom d'utilisateur ou mot de passe incorrect.";
             }
-        } 
-
-        // Afficher la vue login
-        include '../app/views/auth/login.php';
+        }
+    
+        // Inclure la vue de connexion
+        require '../app/views/auth/login.php';
     }
+    
+
     public function logout() {
         // Détruire la session et rediriger vers la page de connexion
         session_start();

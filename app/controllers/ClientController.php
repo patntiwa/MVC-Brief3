@@ -1,18 +1,17 @@
 <?php
-
 class ClientController {
-    public function __construct() {
-        session_start();
-        // Vérifier si l'utilisateur est connecté et a le rôle de Client
-        if (!isset($_SESSION['user_id']) || $_SESSION['role_id'] != 2) {
-            // Rediriger vers la page de connexion si l'utilisateur n'est pas un client
-            header('Location: ?route=login');
+    public function dashboard() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        // Vérifiez que l'utilisateur a les permissions nécessaires pour accéder au tableau de bord
+        if (!isset($_SESSION['role_id']) || $_SESSION['role_id'] != 2) {
+            echo "Accès refusé.";
             exit;
         }
-    }
 
-    public function dashboard() {
         // Charger la vue du tableau de bord client
-        require '../app/views/client/dashboard.php';
+        include '../app/views/client/dashboard.php';
     }
 }

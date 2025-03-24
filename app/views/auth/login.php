@@ -16,7 +16,7 @@
         <?php endif; ?>
 
         <div class="mb-4">
-            <label for="email" class="block text-sm">Email</label>
+            <label for="email" class="block text-sm">Email ou nom d'utilisateur</label>
             <input type="email" id="email" name="email" required
                 class="w-full border rounded px-2 py-2">
         </div>
