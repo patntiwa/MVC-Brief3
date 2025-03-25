@@ -5,9 +5,18 @@ require_once '../app/controllers/DashboardController.php';
 $route = $_GET['route'] ?? 'login'; // Détermine la route demandée
 error_log("Route demandée : " . $route); // Ajoutez cette ligne pour déboguer
 
-session_start(); // Démarre la session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start(); // Assurez-vous que la session ne démarre jamais deux fois
+}
+
 
 switch ($route) {
+    case 'loginPage': // Page de Connexion
+        $controller = new UserController();
+        $controller->loginPage();
+        break;
+
+    
     case 'login': // Connexion
         $controller = new UserController();
         $controller->login();
@@ -18,10 +27,15 @@ switch ($route) {
         $controller->logout();
         break;
 
-    case 'register': // Inscription
+    case 'registerPage': // Page d'Inscription
         $controller = new UserController();
-        $controller->register();
+        $controller->registerPage();
         break;
+
+    case 'registerForm': // Page d'Inscription
+        $controller = new UserController();
+        $controller->registerForm();
+        break;                                      
 
     case 'dashboard': // Dashboard (accessible uniquement aux utilisateurs connectés)
         if (isset($_SESSION['user_id'])) {

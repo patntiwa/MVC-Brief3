@@ -5,7 +5,6 @@ class FlashMessage
     // Ajouter un message flash
     public static function add($type, $message)
     {
-        session_start();
         $_SESSION['flash'][] = [
             'type' => $type, // Exemple : 'success', 'error', ou 'info'
             'message' => $message,
@@ -15,7 +14,6 @@ class FlashMessage
     // Afficher les messages flash existants
     public static function display()
     {
-        session_start();
 
         if (isset($_SESSION['flash'])) {
             foreach ($_SESSION['flash'] as $flash) {

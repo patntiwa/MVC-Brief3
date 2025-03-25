@@ -18,8 +18,7 @@ class UserController
     // Afficher la page de connexion
     public function loginPage()
     {
-        echo "Controleur atteint"; // Test
-        require_once __DIR__.'app/views/auth/login.php';
+        require_once __DIR__.'/../views/auth/login.php';
     }
 
     // Traiter la connexion utilisateur
@@ -48,7 +47,8 @@ class UserController
                 $_SESSION['role'] = $user['role_id'];
 
                 FlashMessage::add('success', 'Connexion réussie. Bienvenue !');
-                header('Location: /dashboard');
+                $dashboardRoute = '/dashboard'; // Define the route as a variable
+                header('Location: ' . $dashboardRoute);
                 exit;
             } else {
                 FlashMessage::add('error', 'Identifiants invalides. Vérifiez votre email et mot de passe.');
@@ -72,46 +72,66 @@ class UserController
 
     public function registerPage()
     {
-        require_once 'app/views/auth/register.php';
+        require_once __DIR__.'/../views/auth/register.php';
     }
 
-    public function register()
+    public function registerForm()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Gestion de l'envoi du formulaire
             $username = trim(htmlspecialchars($_POST['username']));
             $email = trim(htmlspecialchars($_POST['email']));
             $password = htmlspecialchars($_POST['password']);
             $confirmPassword = htmlspecialchars($_POST['confirm_password']);
-
+            $role = htmlspecialchars($_POST['role']); // Rôle choisi par l'utilisateur
+    
+            // Liste blanche (les options sont déjà validées côté serveur)
+            $roles = $this->userModel->getRoles(true); 
+            $allowedRoleNames = array_column($roles, 'name'); // Extraire les noms des rôles
+    
+            if (!in_array($role, $allowedRoleNames)) {
+                FlashMessage::add('error', 'Le rôle choisi n\'est pas autorisé.');
+                header('Location: /register');
+                exit;
+            }
             // Validation des champs
             if (empty($username) || empty($email) || empty($password) || empty($confirmPassword)) {
                 FlashMessage::add('error', 'Tous les champs sont obligatoires.');
                 header('Location: /register');
                 exit;
             }
-
+    
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 FlashMessage::add('error', 'L\'adresse email est invalide.');
                 header('Location: /register');
                 exit;
             }
-
+    
             if ($password !== $confirmPassword) {
                 FlashMessage::add('error', 'Les mots de passe ne correspondent pas.');
                 header('Location: /register');
                 exit;
             }
-
+    
             // Vérifier si l'utilisateur existe déjà
             if ($this->userModel->getUserByEmail($email)) {
                 FlashMessage::add('error', 'Cet email est déjà utilisé.');
                 header('Location: /register');
                 exit;
             }
-
+            // Obtenir l'ID du rôle à partir du nom (via le modèle)
+            $roleId = $this->userModel->getRoleIdByName($role);
+            $result = $this->userModel->register($username, $email, $password, $roleId);
+    
+            if (!$roleId) { // Si le rôle n'existe pas, renvoyer une erreur
+                FlashMessage::add('error', 'Erreur système : rôle client introuvable.');
+                header('Location: /register');
+                exit;
+            }
+    
             // Enregistrement dans la base de données
-            $result = $this->userModel->register($username, $email, $password);
-
+            $result = $this->userModel->register($username, $email, $password, $roleId);
+    
             if ($result['success']) {
                 FlashMessage::add('success', 'Inscription réussie ! Vous pouvez vous connecter.');
                 header('Location: /login');
@@ -122,13 +142,16 @@ class UserController
                 exit;
             }
         }
+    
+    
     }
     
     // ===== DASHBOARD =====
     public function dashboard()
     {
+        echo "Controleur atteint"; // Test
         Auth::checkAuth(); // Vérifie que l'utilisateur est connecté
-        require_once 'app/views/dashboard.php';
+        require_once __DIR__.'/../views/dashboard.php';
     }
 
     // ===== ADMINISTRATION (GESTION UTILISATEURS) =====

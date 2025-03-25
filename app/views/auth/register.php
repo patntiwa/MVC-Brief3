@@ -48,8 +48,8 @@
             <select id="role_id" name="role_id" required class="w-full border rounded px-2 py-2">
                 <option value="" disabled selected>Choisissez un rôle</option>
                 <?php foreach ($roles as $role): ?>
-                    <option value="<?= htmlspecialchars($role['id']) ?>">
-                        <?= htmlspecialchars($role['name']) ?>
+                    <option value="<?= htmlspecialchars($role['name']); ?>">
+                        <?= htmlspecialchars(ucfirst($role['name'])); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -60,7 +60,7 @@
         </button>
 
         <p class="text-center text-sm mt-4">
-            Déjà un compte ? <a href="?route=login" class="text-blue-600 underline">Connectez-vous</a>
+            Déjà un compte ? <a href="?route=loginPage" class="text-blue-600 underline">Connectez-vous</a>
         </p>
     </form>
 </div>

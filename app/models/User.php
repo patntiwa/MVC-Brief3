@@ -74,6 +74,20 @@ class User
         }
     }
 
+        public function getRoleIdByName($roleName)
+    {
+        $query = $this->db->prepare(
+            "SELECT id FROM roles WHERE name = :name LIMIT 1"
+        );
+        $query->bindParam(':name', $roleName);
+
+        $query->execute();
+
+        // Retourner l'ID du rôle si le rôle existe, sinon null
+        $result = $query->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['id'] : null;
+    }
+
     // Ajouter un utilisateur (par exemple via admin)
     public function createUser($username, $email, $password, $role_id)
     {
@@ -146,12 +160,21 @@ class User
     }
 
     // Récupérer tous les rôles possibles
-    public function getRoles()
+    public function getRoles($excludeAdmin = false)
     {
-        $query = $this->db->prepare("SELECT * FROM roles");
+        // Construire la requête SQL avec ou sans exclusion
+        if ($excludeAdmin) {
+            $query = $this->db->prepare("SELECT * FROM roles WHERE name != :excluded_role");
+            $excludedRole = 'admin';
+            $query->bindParam(':excluded_role', $excludedRole);
+        } else {
+            $query = $this->db->prepare("SELECT * FROM roles");
+        }
+    
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
     public function getAllUsersWithRoles()
     {

@@ -8,7 +8,7 @@
 <body class="bg-gray-100">
 
 <div class="min-h-screen flex items-center justify-center">
-    <form method="POST" class="bg-white p-6 rounded shadow-md w-full max-w-sm">
+    <form method="POST" action="config/routes.php?route=login" class="bg-white p-6 rounded shadow-md w-full max-w-sm">
         <h2 class="text-lg font-bold mb-4 text-center">Connexion</h2>
 
         <?php if (!empty($error)) : ?>
@@ -28,6 +28,10 @@
         </div>
 
         <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded shadow-md hover:bg-blue-700">Se connecter</button>
+
+        <p class="text-center text-sm mt-4">
+            Vous n'avez pas de compte? <a href="?route=registerPage" class="text-blue-600 underline">Inscrivez-vous</a>
+        </p>
     </form>
 </div>
 </body>
