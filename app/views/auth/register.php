@@ -1,3 +1,9 @@
+<?php
+require_once __DIR__ . '/../../models/User.php';
+
+$userModel = new User();
+$roles = $userModel->getRoles(); // Récupérer les rôles depuis la base de données
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,7 +14,7 @@
 <body class="bg-gray-100">
 
 <div class="flex items-center justify-center h-screen">
-    <form action="?route=register" method="POST" class="bg-white p-6 rounded shadow-md w-full max-w-sm">
+    <form action="?route=registerForm" method="POST" class="bg-white p-6 rounded shadow-md w-full max-w-sm">
         <h2 class="text-lg font-bold mb-4 text-center">Créer un compte</h2>
 
         <?php if (!empty($error)): ?>
@@ -45,7 +51,7 @@
 
         <div class="mb-6">
             <label for="role_id" class="block text-sm">Rôle</label>
-            <select id="role_id" name="role_id" required class="w-full border rounded px-2 py-2">
+            <select id="role_id" name="role" required class="w-full border rounded px-2 py-2">
                 <option value="" disabled selected>Choisissez un rôle</option>
                 <?php foreach ($roles as $role): ?>
                     <option value="<?= htmlspecialchars($role['name']); ?>">

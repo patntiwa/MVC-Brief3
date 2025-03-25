@@ -25,35 +25,18 @@ class UserController
     public function login()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim(htmlspecialchars($_POST['email']));
-            $password = htmlspecialchars($_POST['password']);
-
-            // Récupérer l'utilisateur via le modèle
+            $email = $_POST['email'];
+            $password = $_POST['password'];
             $user = $this->userModel->getUserByEmail($email);
-            
-            // Vérifications des identifiants
             if ($user && password_verify($password, $user['password'])) {
-                // Vérifier si le compte est actif
-                if ($user['status'] == 'inactive') {
-                    FlashMessage::add('error', 'Votre compte est inactif. Contactez l\'administrateur.');
-                    header('Location: /login');
-                    exit;
-                }
-
-                // Démarrer la session utilisateur
                 session_start();
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $user['username'];
-                $_SESSION['role'] = $user['role_id'];
-
-                FlashMessage::add('success', 'Connexion réussie. Bienvenue !');
-                $dashboardRoute = '/dashboard'; // Define the route as a variable
-                header('Location: ' . $dashboardRoute);
-                exit;
+                $_SESSION['role_id'] = $user['role_id'];
+                header('Location: ?route=dashboard');
             } else {
-                FlashMessage::add('error', 'Identifiants invalides. Vérifiez votre email et mot de passe.');
-                header('Location: /login');
-                exit;
+                FlashMessage::add('error', 'Identifiants incorrects.');
+                header('Location: ?route=loginPage');
             }
         }
     }
@@ -121,29 +104,20 @@ class UserController
             }
             // Obtenir l'ID du rôle à partir du nom (via le modèle)
             $roleId = $this->userModel->getRoleIdByName($role);
-            $result = $this->userModel->register($username, $email, $password, $roleId);
-    
-            if (!$roleId) { // Si le rôle n'existe pas, renvoyer une erreur
-                FlashMessage::add('error', 'Erreur système : rôle client introuvable.');
-                header('Location: /register');
+            if (!$roleId) {
+                FlashMessage::add('error', 'Rôle invalide.');
+                header('Location: ?route=registerPage');
                 exit;
             }
-    
-            // Enregistrement dans la base de données
-            $result = $this->userModel->register($username, $email, $password, $roleId);
-    
-            if ($result['success']) {
-                FlashMessage::add('success', 'Inscription réussie ! Vous pouvez vous connecter.');
-                header('Location: /login');
-                exit;
+            $result = $this->userModel->createUser($username, $email, $password, $roleId);
+            if ($result) {
+                FlashMessage::add('success', 'Inscription réussie.');
+                header('Location: ?route=loginPage');
             } else {
-                FlashMessage::add('error', 'Échec de l\'inscription. Réessayez.');
-                header('Location: /register');
-                exit;
+                FlashMessage::add('error', 'Erreur lors de l\'inscription.');
+                header('Location: ?route=registerPage');
             }
         }
-    
-    
     }
     
     // ===== DASHBOARD =====

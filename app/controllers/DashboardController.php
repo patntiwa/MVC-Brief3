@@ -3,7 +3,6 @@ class DashboardController {
 
     public function dashboard() {
         // Vérification d'authentification
-        session_start(); // Assurez-vous que les sessions sont accessibles
         if (!isset($_SESSION['user_id'])) {
             header('Location: ?route=login'); // Redirige vers login si non connecté
             exit;

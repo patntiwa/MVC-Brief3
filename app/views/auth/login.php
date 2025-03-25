@@ -8,7 +8,7 @@
 <body class="bg-gray-100">
 
 <div class="min-h-screen flex items-center justify-center">
-    <form method="POST" action="config/routes.php?route=login" class="bg-white p-6 rounded shadow-md w-full max-w-sm">
+    <form method="POST" action="?route=login" class="bg-white p-6 rounded shadow-md w-full max-w-sm">
         <h2 class="text-lg font-bold mb-4 text-center">Connexion</h2>
 
         <?php if (!empty($error)) : ?>
