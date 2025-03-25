@@ -1,26 +1,21 @@
 <?php
 class DashboardController {
-    
-    public function index() {
+
+    public function dashboard() {
+        // Vérification d'authentification
+        session_start(); // Assurez-vous que les sessions sont accessibles
         if (!isset($_SESSION['user_id'])) {
-            header('Location: ?route=login');
+            header('Location: ?route=login'); // Redirige vers login si non connecté
             exit;
         }
 
-        if ($_SESSION['role_id'] == 1) { // Rôle Admin
+        // Vérification du rôle
+        if (isset($_SESSION['role_name']) && $_SESSION['role_name'] == 'admin') {
+            // Si l'utilisateur est un admin
             include '../app/views/admin/dashboard.php';
-        } else { // Rôle Client
+        } else {
+            // Sinon, afficher un profil (client ou autre)
             include '../app/views/client/profile.php';
         }
     }
-
-    public function middleware() {
-        session_start();
-        if (empty($_SESSION['user'])) {
-            header('Location: ?route=login'); // Redirige vers la page de connexion si non connecté
-            exit;
-        }
-    }
-    
-
 }
